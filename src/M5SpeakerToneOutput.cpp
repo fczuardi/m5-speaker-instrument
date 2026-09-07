@@ -65,7 +65,6 @@ bool M5SpeakerToneOutput::startNote(
     ToneWaveform waveform,
     uint8_t) {
   if (!initialized_ || frequencyHz <= 0.0f) {
-    playing_ = false;
     return false;
   }
 

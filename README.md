@@ -16,7 +16,7 @@ The current firmware is a Core Gray local note sweep.
 - M5Unified initializes the board, display, and internal speaker.
 - Button A starts or stops the selected tone.
 - Button B advances through C3, C4, A4, C5, and C6.
-- Button C alternates between `square32` and `saw32` waveforms.
+- Button C alternates between `sq32` and `saw32` waveforms.
 - The display and serial monitor report board id, note, frequency, waveform,
   speaker volume, output state, and uptime.
 
