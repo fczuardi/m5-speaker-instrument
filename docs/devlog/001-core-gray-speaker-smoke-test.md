@@ -56,3 +56,15 @@ Hardware observations:
 - On the first Core Gray 1.0 spectrometer check, the five-second A4 tone showed
   waterfall bars at approximately 439 Hz, 879 Hz, 1324 Hz, 1781 Hz, 2203 Hz,
   3938 Hz, and additional weaker bands.
+
+Conclusion:
+
+The smoke test is a success. The observed 439 Hz band is close enough to the
+intended 440 Hz A4 to count as the fundamental, and the other visible bands line
+up with nearby harmonic multiples. This is a better first result than the
+M5StickC Plus2 buzzer experiments for lower musical material, where the
+spectrometer mostly showed high harmonics and not the fundamental itself.
+
+The next useful slices can stay focused on the Core Gray speaker: compare
+waveforms, test note ranges, find practical volume limits, and only then decide
+whether to introduce MIDI or extract a reusable instrument package.

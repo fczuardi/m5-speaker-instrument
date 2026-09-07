@@ -9,7 +9,7 @@ initial milestone is to prove that PlatformIO can build firmware for the Core
 Gray and that M5Unified can drive a recognizable tone through the internal
 speaker.
 
-## Current Slice
+## Current Status
 
 The current firmware is a Core Gray speaker smoke test.
 
@@ -18,6 +18,11 @@ The current firmware is a Core Gray speaker smoke test.
 - Button B cycles through a small set of speaker volume levels.
 - The display and serial monitor report board id, speaker volume, tone
   frequency, and uptime.
+
+The first hardware pass was successful. A spectrometer check of the A4 test tone
+showed a clear fundamental near 439 Hz plus visible harmonics, which makes the
+Core Gray speaker a more promising musical output path than the M5StickC Plus2
+buzzer for notes where the fundamental matters.
 
 This is intentionally not a synthesizer yet. BLE MIDI, shared firmware
 contracts, pitch bend, velocity mapping, and package extraction are out of scope
