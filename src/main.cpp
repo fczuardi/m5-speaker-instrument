@@ -1,63 +1,55 @@
 #include <Arduino.h>
 #include <M5Unified.h>
 
+#include "M5SpeakerToneOutput.h"
+#include "ToneWaveform.h"
+
 namespace {
 constexpr uint32_t SERIAL_BAUD = 115200;
 constexpr uint32_t UPTIME_LOG_INTERVAL_MS = 1000;
-constexpr uint8_t SPEAKER_CHANNEL = 0;
-constexpr uint8_t SPEAKER_VOLUME = 35;
+constexpr uint8_t DEFAULT_TEST_VELOCITY = 96;
+constexpr uint8_t MIDI_NOTE_C3 = 48;
+constexpr uint8_t MIDI_NOTE_C4 = 60;
+constexpr uint8_t MIDI_NOTE_A4 = 69;
+constexpr uint8_t MIDI_NOTE_C5 = 72;
+constexpr uint8_t MIDI_NOTE_C6 = 84;
 
 struct SweepNote {
   const char* name;
+  uint8_t midiNote;
   float frequencyHz;
 };
 
-struct WaveformDefinition {
-  const char* name;
-  const uint8_t* samples;
-  size_t sampleCount;
-};
-
 constexpr SweepNote SWEEP_NOTES[] = {
-    {"C3", 130.81f},
-    {"C4", 261.63f},
-    {"A4", 440.00f},
-    {"C5", 523.25f},
-    {"C6", 1046.50f},
+    {"C3", MIDI_NOTE_C3, 130.81f},
+    {"C4", MIDI_NOTE_C4, 261.63f},
+    {"A4", MIDI_NOTE_A4, 440.00f},
+    {"C5", MIDI_NOTE_C5, 523.25f},
+    {"C6", MIDI_NOTE_C6, 1046.50f},
 };
 
-constexpr uint8_t SQUARE_WAVE_32[] = {
-    255, 255, 255, 255, 255, 255, 255, 255,
-    255, 255, 255, 255, 255, 255, 255, 255,
-    0,   0,   0,   0,   0,   0,   0,   0,
-    0,   0,   0,   0,   0,   0,   0,   0,
+constexpr ToneWaveform WAVEFORMS[] = {
+    ToneWaveform::Square32,
+    ToneWaveform::Saw32,
 };
 
-constexpr uint8_t SAW_WAVE_32[] = {
-    0,   8,   16,  25,  33,  41,  49,  58,
-    66,  74,  82,  90,  99,  107, 115, 123,
-    132, 140, 148, 156, 165, 173, 181, 189,
-    197, 206, 214, 222, 230, 239, 247, 255,
-};
-
-constexpr WaveformDefinition WAVEFORMS[] = {
-    {"square32", SQUARE_WAVE_32, sizeof(SQUARE_WAVE_32)},
-    {"saw32", SAW_WAVE_32, sizeof(SAW_WAVE_32)},
-};
-
+M5SpeakerToneOutput speakerOutput;
 size_t selectedNoteIndex = 2;
 size_t selectedWaveformIndex = 0;
 uint32_t lastUptimeLogAtMs = 0;
 uint32_t toneAttemptCount = 0;
 bool lastToneStarted = false;
-bool tonePlaying = false;
 
 const SweepNote& currentNote() {
   return SWEEP_NOTES[selectedNoteIndex];
 }
 
-const WaveformDefinition& currentWaveform() {
+ToneWaveform currentWaveform() {
   return WAVEFORMS[selectedWaveformIndex];
+}
+
+bool tonePlaying() {
+  return speakerOutput.isPlaying();
 }
 
 void drawScreen(const char* stateLabel) {
@@ -74,11 +66,11 @@ void drawScreen(const char* stateLabel) {
   M5.Display.printf("Board id: %d\n", static_cast<int>(M5.getBoard()));
   M5.Display.printf("Note: %s\n", currentNote().name);
   M5.Display.printf("Freq: %.2f Hz\n", currentNote().frequencyHz);
-  M5.Display.printf("Wave: %s\n", currentWaveform().name);
-  M5.Display.printf("Volume: %u\n", SPEAKER_VOLUME);
+  M5.Display.printf("Wave: %s\n", toneWaveformName(currentWaveform()));
+  M5.Display.printf("Volume: %u\n", speakerOutput.volume());
   M5.Display.printf("Tone attempts: %lu\n", toneAttemptCount);
   M5.Display.print("Output: ");
-  M5.Display.println(tonePlaying ? "playing" : "stopped");
+  M5.Display.println(tonePlaying() ? "playing" : "stopped");
   M5.Display.print("Last request: ");
   M5.Display.println(lastToneStarted ? "accepted" : "none/failed");
   M5.Display.print("State: ");
@@ -95,54 +87,45 @@ void logSpeakerSetup() {
   Serial.println("Firmware booted");
   Serial.printf("board_id=%d\n", static_cast<int>(M5.getBoard()));
   Serial.printf(
-      "speaker: backend=m5unified internal_spk=true channel=%u volume=%u notes=%u waveforms=%u\n",
-      SPEAKER_CHANNEL,
-      SPEAKER_VOLUME,
+      "speaker: backend=m5_speaker volume=%u notes=%u waveforms=%u\n",
+      speakerOutput.volume(),
       static_cast<unsigned>(sizeof(SWEEP_NOTES) / sizeof(SWEEP_NOTES[0])),
       static_cast<unsigned>(sizeof(WAVEFORMS) / sizeof(WAVEFORMS[0])));
 }
 
 void startTone(const char* reason) {
-  M5.Speaker.setVolume(SPEAKER_VOLUME);
   toneAttemptCount++;
-  lastToneStarted = M5.Speaker.tone(
+  lastToneStarted = speakerOutput.startNote(
+      currentNote().midiNote,
       currentNote().frequencyHz,
-      UINT32_MAX,
-      SPEAKER_CHANNEL,
-      true,
-      currentWaveform().samples,
-      currentWaveform().sampleCount);
-  tonePlaying = lastToneStarted;
+      currentWaveform(),
+      DEFAULT_TEST_VELOCITY);
 
   Serial.printf(
-      "speaker: tone_start reason=%s ok=%s channel=%u note=%s frequency_hz=%.2f waveform=%s volume=%u\n",
+      "speaker: tone_start reason=%s ok=%s note=%s midi_note=%u frequency_hz=%.2f waveform=%s volume=%u\n",
       reason,
       lastToneStarted ? "true" : "false",
-      SPEAKER_CHANNEL,
       currentNote().name,
+      currentNote().midiNote,
       currentNote().frequencyHz,
-      currentWaveform().name,
-      SPEAKER_VOLUME);
+      toneWaveformName(currentWaveform()),
+      speakerOutput.volume());
   drawScreen(lastToneStarted ? "tone requested" : "tone failed");
 }
 
 void stopTone(const char* reason) {
-  if (!tonePlaying) {
+  if (!speakerOutput.isPlaying()) {
     return;
   }
 
-  M5.Speaker.stop(SPEAKER_CHANNEL);
-  tonePlaying = false;
+  speakerOutput.stopNote();
 
-  Serial.printf(
-      "speaker: tone_stop reason=%s channel=%u\n",
-      reason,
-      SPEAKER_CHANNEL);
+  Serial.printf("speaker: tone_stop reason=%s\n", reason);
   drawScreen("stopped");
 }
 
 void toggleTone() {
-  if (tonePlaying) {
+  if (speakerOutput.isPlaying()) {
     stopTone("button_a");
     return;
   }
@@ -151,12 +134,11 @@ void toggleTone() {
 }
 
 bool restartToneIfPlaying(const char* reason) {
-  if (!tonePlaying) {
+  if (!speakerOutput.isPlaying()) {
     return false;
   }
 
-  M5.Speaker.stop(SPEAKER_CHANNEL);
-  tonePlaying = false;
+  speakerOutput.stopNote();
   startTone(reason);
   return true;
 }
@@ -180,7 +162,7 @@ void selectNextWaveform() {
 
   Serial.printf(
       "speaker: waveform_select waveform=%s\n",
-      currentWaveform().name);
+      toneWaveformName(currentWaveform()));
   if (!restartToneIfPlaying("waveform_change")) {
     drawScreen("waveform selected");
   }
@@ -193,14 +175,15 @@ void logUptime(uint32_t nowMs) {
 
   lastUptimeLogAtMs = nowMs;
   Serial.printf(
-      "speaker: uptime_ms=%lu board_id=%d note=%s frequency_hz=%.2f waveform=%s volume=%u playing=%s tone_attempts=%lu\n",
+      "speaker: uptime_ms=%lu board_id=%d note=%s midi_note=%u frequency_hz=%.2f waveform=%s volume=%u playing=%s tone_attempts=%lu\n",
       nowMs,
       static_cast<int>(M5.getBoard()),
       currentNote().name,
+      currentNote().midiNote,
       currentNote().frequencyHz,
-      currentWaveform().name,
-      SPEAKER_VOLUME,
-      tonePlaying ? "true" : "false",
+      toneWaveformName(currentWaveform()),
+      speakerOutput.volume(),
+      speakerOutput.isPlaying() ? "true" : "false",
       toneAttemptCount);
 }
 
@@ -218,8 +201,7 @@ void setup() {
   M5.Display.setRotation(1);
   M5.Display.setBrightness(96);
 
-  M5.Speaker.begin();
-  M5.Speaker.setVolume(SPEAKER_VOLUME);
+  speakerOutput.begin();
 
   logSpeakerSetup();
   drawScreen("ready");

@@ -20,6 +20,12 @@ The current firmware is a Core Gray local note sweep.
 - The display and serial monitor report board id, note, frequency, waveform,
   speaker volume, output state, and uptime.
 
+The local sweep drives the speaker through `M5SpeakerToneOutput`, which
+implements a small hardware-neutral `VoiceOutput` interface. This keeps
+M5Unified speaker playback and Core Gray-validated calibration separate from
+the button UI, and prepares the repo to test whether the same monophonic
+instrument policy used by the buzzer can be shared later.
+
 The hardware passes were successful. A spectrometer check of the A4 test tone
 showed a clear fundamental near 439 Hz plus visible harmonics. The later note
 sweep refined that result: A4, C5, and C6 showed clear fundamentals, while C3
