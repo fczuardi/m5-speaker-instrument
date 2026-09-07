@@ -56,5 +56,6 @@ pio run
 
 Hardware observations:
 
-- Pending hardware check after the invalid-request semantics and diagnostic
-  label cleanup.
+- Hardware test on the Core Gray passed after the invalid-request semantics and
+  diagnostic label cleanup. The refactor did not change the observed local
+  note-sweep behavior.
