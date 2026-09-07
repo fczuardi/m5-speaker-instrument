@@ -48,9 +48,11 @@ result, and uptime.
 
 Hardware observations:
 
-- Pending first flash to a Core Gray 1.0.
 - Initial local build attempts reached PlatformIO dependency installation but
   failed while installing `tool-esptoolpy` because of disk quota pressure from
   duplicate caches.
 - After cleaning duplicate caches and populating the shared cache with a
   workspace-local `TMPDIR`, `pio run` built the firmware successfully.
+- On the first Core Gray 1.0 spectrometer check, the five-second A4 tone showed
+  waterfall bars at approximately 439 Hz, 879 Hz, 1324 Hz, 1781 Hz, 2203 Hz,
+  3938 Hz, and additional weaker bands.
