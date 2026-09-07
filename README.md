@@ -20,14 +20,18 @@ The current firmware is a Core Gray local note sweep.
 - The display and serial monitor report board id, note, frequency, waveform,
   speaker volume, output state, and uptime.
 
-The first hardware pass was successful. A spectrometer check of the A4 test tone
-showed a clear fundamental near 439 Hz plus visible harmonics, which makes the
-Core Gray speaker a more promising musical output path than the M5StickC Plus2
-buzzer for notes where the fundamental matters.
+The hardware passes were successful. A spectrometer check of the A4 test tone
+showed a clear fundamental near 439 Hz plus visible harmonics. The later note
+sweep refined that result: A4, C5, and C6 showed clear fundamentals, while C3
+and C4 were represented mainly by higher harmonics at the tested volume. The
+speaker is therefore a promising musical output path, but not a full-range
+speaker; its useful response and timbre depend on register, waveform, volume,
+room, and measurement setup.
 
 This is intentionally not a synthesizer yet. BLE MIDI, shared firmware
-contracts, pitch bend, velocity mapping, and package extraction are out of scope
-until the basic speaker path is observable on hardware.
+contracts, pitch bend, velocity mapping, and package extraction remain outside
+this local hardware-discovery slice. The basic speaker path is now observable,
+so later slices can introduce those concerns one boundary at a time.
 
 ## Commands
 

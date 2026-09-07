@@ -75,9 +75,9 @@ Hardware observations:
 
 Saw-wave fundamental visibility on the Android spectrometer app:
 
-| Note | Expected fundamental | Fundamental visible? | First visible line |
+| Note | Expected fundamental | Fundamental visible? | First clearly visible line |
 | --- | ---: | --- | ---: |
-| C3 | 130 Hz | no | about 539 Hz |
+| C3 | 130 Hz | no | about 770 Hz |
 | C4 | 261.63 Hz | no | about 521 Hz |
 | A4 | 440 Hz | yes | about 440 Hz |
 | C5 | 523.25 Hz | yes | about 523.5 Hz |
@@ -89,10 +89,10 @@ harmonics rather than by visible low fundamentals.
 
 Square-wave fundamental visibility on the Android spectrometer app:
 
-| Note | Expected fundamental | Fundamental visible? | First visible line |
+| Note | Expected fundamental | Fundamental visible? | First clearly visible line |
 | --- | ---: | --- | ---: |
 | C3 | 130 Hz | no | about 656 Hz |
-| C4 | 261.63 Hz | barely | about 785 Hz clearly |
+| C4 | 261.63 Hz | barely | about 785 Hz |
 | A4 | 440 Hz | yes | about 440 Hz |
 | C5 | 523.25 Hz | yes | about 523 Hz |
 | C6 | 1046.50 Hz | yes | about 1046 Hz |
