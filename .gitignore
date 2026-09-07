@@ -1,0 +1,4 @@
+.pio/
+.platformio-home/
+.vscode/
+compile_commands.json
