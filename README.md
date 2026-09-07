@@ -11,13 +11,14 @@ speaker.
 
 ## Current Status
 
-The current firmware is a Core Gray speaker smoke test.
+The current firmware is a Core Gray local note sweep.
 
 - M5Unified initializes the board, display, and internal speaker.
-- Button A plays a five-second A4 tone for spectrometer inspection.
-- Button B cycles through a small set of speaker volume levels.
-- The display and serial monitor report board id, speaker volume, tone
-  frequency, and uptime.
+- Button A starts or stops the selected tone.
+- Button B advances through C3, C4, A4, C5, and C6.
+- Button C alternates between `square32` and `saw32` waveforms.
+- The display and serial monitor report board id, note, frequency, waveform,
+  speaker volume, output state, and uptime.
 
 The first hardware pass was successful. A spectrometer check of the A4 test tone
 showed a clear fundamental near 439 Hz plus visible harmonics, which makes the
