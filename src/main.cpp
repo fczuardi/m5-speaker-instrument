@@ -5,7 +5,7 @@ namespace {
 constexpr uint32_t SERIAL_BAUD = 115200;
 constexpr uint32_t UPTIME_LOG_INTERVAL_MS = 1000;
 constexpr float TEST_TONE_FREQUENCY_HZ = 440.0f;
-constexpr uint32_t TEST_TONE_DURATION_MS = 350;
+constexpr uint32_t TEST_TONE_DURATION_MS = 5000;
 constexpr uint8_t SPEAKER_CHANNEL = 0;
 constexpr uint8_t VOLUME_LEVELS[] = {32, 64, 96, 128, 160};
 

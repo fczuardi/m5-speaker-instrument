@@ -20,9 +20,10 @@ compilation puts less pressure on `/tmp`.
 
 The firmware initializes M5Unified with the internal speaker enabled, draws a
 small status screen, and logs diagnostic facts over serial. Button A plays a
-short A4 tone at 440 Hz. Button B cycles through a few fixed volume levels so
-the hardware test can quickly find whether the Core Gray speaker needs a lower
-or higher setting to make the pitch recognizable without sounding harsh.
+five-second A4 tone at 440 Hz, long enough to inspect the fundamental and
+harmonics in a spectrometer. Button B cycles through a few fixed volume levels
+so the hardware test can quickly find whether the Core Gray speaker needs a
+lower or higher setting to make the pitch recognizable without sounding harsh.
 
 This slice deliberately avoids BLE, shared contracts, pitch bend, velocity
 mapping, and package extraction. Those belong after the speaker path is proven.
@@ -41,9 +42,9 @@ pio device monitor
 ```
 
 Expected result: the device shows the Core Gray speaker smoke-test screen,
-Button A produces a short recognizable A4 tone, Button B changes the volume
-level, and the serial monitor prints the board id, volume, tone start result,
-and uptime.
+Button A produces a five-second recognizable A4 tone, Button B changes the
+volume level, and the serial monitor prints the board id, volume, tone start
+result, and uptime.
 
 Hardware observations:
 
