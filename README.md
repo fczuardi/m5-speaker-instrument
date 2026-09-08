@@ -6,13 +6,13 @@ speakers.
 ## Retired
 
 This experiment has been migrated into
-`/home/fcz/dev/m5stick/monophonic-instrument`.
+[fczuardi/monophonic-instrument](https://github.com/fczuardi/monophonic-instrument).
 
 The useful Core Gray speaker smoke-test behavior now lives in:
 
-- `monophonic-instrument/apps/core-gray-speaker-local-test`
-- `monophonic-instrument/packages/m5-tone-output`
-- `M5CoreGrayToneOutput`
+- [`apps/core-gray-speaker-local-test`](https://github.com/fczuardi/monophonic-instrument/tree/main/apps/core-gray-speaker-local-test)
+- [`packages/m5-tone-output`](https://github.com/fczuardi/monophonic-instrument/tree/main/packages/m5-tone-output)
+- [`M5CoreGrayToneOutput`](https://github.com/fczuardi/monophonic-instrument/blob/main/packages/m5-tone-output/include/M5CoreGrayToneOutput.h)
 
 The migrated firmware was build-validated and hardware-tested on the M5Stack
 Core Gray. This repository is kept only as historical development context and
@@ -52,7 +52,10 @@ room, and measurement setup.
 
 This repository intentionally stops at local hardware discovery. BLE MIDI,
 shared firmware contracts, pitch bend, velocity mapping, and package extraction
-belong in `monophonic-instrument` and `embedded-music-experiments`.
+belong in
+[fczuardi/monophonic-instrument](https://github.com/fczuardi/monophonic-instrument)
+and
+[fczuardi/embedded-music-experiments](https://github.com/fczuardi/embedded-music-experiments).
 
 ## Commands
 
